@@ -1,1 +1,44 @@
-{{test}}
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+{% comment %} <div class="overlay" style="background-color:black; display:flex; justify-content:center; align-items:center; height:100vh; cursor:pointer; position:fixed; top:0; left:0; width:100%; z-index:999;" onclick="startVideo()">
+    <h6 class="crt" style="font-family: Reddit Mono; color: white; text-align: center;">[Click anywhere]</h6>
+</div> {% endcomment %}
+<div class="card" style="background-color:#191e22; position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); border-style:inset; border-color:#f9f9f9; border-width:1px;">
+    <header class="card-header">
+        <div class="profile-picture" style="width: 8rem;">
+            <img src="{% static 'img/profile/wolf.png' %}" alt="Profile Picture" class="pfp-circle">
+        </div>
+        <div class="column">
+            <div class="profile-info ml-3">
+                <p class="card-header-title" style="text-align: center;">Wolfy.exe_</p>
+            </div>
+        </div>
+    </header>
+    <div class="card-content pt-0">
+        <div class="content">
+            Lorem ipsum leo risus, porta ac consectetur ac, vestibulum at eros. Donec
+            id elit non mi porta gravida at eget metus. Cum sociis natoque penatibus
+            et magnis dis parturient montes, nascetur ridiculus mus. Cras mattis
+            consectetur purus sit amet fermentum.
+        </div>
+    </div>
+</div>
+<div class="video-container crt" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1; filter: brightness(0.5) blur(2px);">
+    <video id="background-video" loop muted style="width: 100vw; height: 100vh; object-fit: cover;">
+        <source src="{% static 'video/background.mp4' %}" type="video/mp4">
+    </video>
+</div>
+<script>
+    function startVideo() {
+        var overlay = document.querySelector(".overlay");
+        overlay.style.opacity = "0";
+        overlay.style.transition = "opacity 1s";
+        var video = document.getElementById("background-video");
+        video.play();
+        var overlay = document.querySelector(".overlay");
+        overlay.style.display = "none";
+    }
+</script>
+{% endblock %}
