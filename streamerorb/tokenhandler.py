@@ -4,6 +4,9 @@ import os
 
 # Load environment variables from .env file
 load_dotenv()
+if load_dotenv() == False:
+    print("No .env file found. Please create one with the required values.")
+    exit()
 
 # Get values from the .env file
 CLIENT_ID = os.getenv('TWITCH_CLIENT_ID')
@@ -17,7 +20,6 @@ def get_new_token(client_id, client_secret):
         'client_secret': client_secret,
         'grant_type': 'client_credentials'
     }
-    
     token_response = requests.post(token_url, params=token_params)
     token_response.raise_for_status()  # Raises an error for bad responses
     token_data = token_response.json()

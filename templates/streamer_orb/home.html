@@ -6,30 +6,67 @@
 <div class="flex justify-center items-center h-screen">
     <div class="bg-purple-900 opacity-75 fixed inset-0"></div>
     <div class="max-w-md w-full bg-white shadow-md rounded-lg p-6 relative">
+        <div class="mt-2 flex justify-center items-center">
+            <img src="{% static "img/profile/animation.gif" %}" alt="Centered Image" class="w-1/3 mx-auto -mt-36 relative -translate-y-1">
+        </div>
         <h2 class="text-xl font-bold mb-4 text-center text-gray-900">Twitch Streamer Orb Generator</h2>
-        <div class="flex flex-row mb-4">
-            <div class="w-3/4 mr-2">
-                <input id="username-input" type="text" class="border border-purple-500 rounded-md w-full py-2 px-3 text-gray-900" placeholder="Enter your text">
+        <div class="flex flex-col mb-4">
+            <div class="w-full mb-2">
+                <label for="username-input" class="text-gray-900">Streamer Username:</label>
+                <input id="username-input" type="text" class="border border-purple-500 rounded-md w-full py-2 px-3 text-gray-900" placeholder="Enter the streamer username" value="kappa">
             </div>
-            <div class="w-1/4">
-                <button onclick="Generate()" class="bg-purple-900 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded w-full">
-                    ORB
-                </button>
+            <div class="flex flex-row">
+                <div class="w-1/2 mr-2">
+                    <label for="speed-input" class="text-gray-900">Speed (5-60):</label>
+                    <input id="speed-input" type="number" class="border border-purple-500 rounded-md w-full py-2 px-3 text-gray-900" placeholder="Speed (5-60)" min="5" max="60" value="20">
+                </div>
+                <div class="w-1/2">
+                    <label for="size-input" class="text-gray-900">Size (20-300):</label>
+                    <input id="size-input" type="number" class="border border-purple-500 rounded-md w-full py-2 px-3 text-gray-900" placeholder="Size (20-300)" min="20" max="300" value="200">
+                </div>
             </div>
+        </div>
+        <div class="w-full">
+            <button onclick="Generate()" class="bg-purple-900 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded w-full">
+                ORB
+            </button>
         </div>
         <div id="image-container" class="mt-4 flex justify-center items-center">
             <!-- The generated image will be displayed here -->
         </div>
+        <div class="w-full mt-4 justify-center items-center">
+            <a id="download-button" href="#" download="file.gif" class="hidden">
+                <button class="bg-purple-900 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded w-full">
+                    Download
+                </button>
+            </a>
+        </div>
     </div>
+    </div>  
 </div>
 <script>
     function Generate() {
         var username = $("#username-input").val();
-        if (username) {
-            GetImage(username);
-        } else {
+        var speed = $("#speed-input").val();
+        var size = $("#size-input").val();
+        var error = false;
+        if (!username) {
             $("#username-input").addClass("border-red-500"); // Add a red border
             $("#username-input").after('<p class="text-red-500 text-sm mt-1">Please enter a username.</p>');
+            error = true;
+        }
+        if (speed < 5 || speed > 60) {
+            $("#speed-input").addClass("border-red-500"); // Add a red border
+            $("#speed-input").after('<p class="text-red-500 text-sm mt-1">Speed must be between 5 and 60.</p>');
+            error = true;
+        }
+        if (size < 20 || size > 300) {
+            $("#size-input").addClass("border-red-500"); // Add a red border
+            $("#size-input").after('<p class="text-red-500 text-sm mt-1">Size must be between 20 and 300.</p>');
+            error = true;
+        }
+        if (!error) {
+            GetImage(username, speed, size);
         }
     }
 
@@ -46,13 +83,27 @@
         $(this).removeClass("border-red-500"); // Remove the red border
         $("#username-input").next().remove(); // Remove any existing error message
     });
+    $("#speed-input").on("input", function() {
+        $(this).removeClass("border-red-500"); // Remove the red border
+        $("#speed-input").next().remove(); // Remove any existing error message
+    });
+    $("#size-input").on("input", function() {
+        $(this).removeClass("border-red-500"); // Remove the red border
+        $("#size-input").next().remove(); // Remove any existing error message
+    });
 
-    function GetImage(username) {
+    function GetImage(username, speed, size) {
+        // Show loading spinner
+        $("#image-container").html('<div class="loader"></div>');
+        $("#download-button").addClass("hidden");
+        // Make an AJAX request to the server
         $.ajax({
             url: '/streamerorb/get_image/',
             method: 'POST',
             data: { 
                 username: username, 
+                speed: speed,
+                size: size,
                 csrfmiddlewaretoken: '{{ csrf_token }}'
             },
             success: function(response) {
@@ -60,8 +111,9 @@
                 if (response.error) {
                     alert(response.error);
                 } else {
-                    console.log(response);
-                    $("#image-container").html('<img src="' + response.profile_image_url + '" alt="Streamer Orb Image">');
+                    $("#image-container").html('<img src="' + response.url + '" alt="'+username+' Orb Image">');
+                    $("#download-button").attr("href", response.url);
+                    $("#download-button").removeClass("hidden");
                 }
             },
             error: function(xhr, status, error) {
