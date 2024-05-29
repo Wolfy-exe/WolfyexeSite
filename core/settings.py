@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-(tcq7+i30x(#2hxubw8fs$o4wi_a@!42987___ffm+_b8h%t$b
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["localhost","127.0.0.1","6fb8-177-134-94-8.ngrok-free.app"]
+ALLOWED_HOSTS = ["localhost","127.0.0.1","wolfyexe.pythonanywhere.com"]
 
 
 # Application definition
@@ -38,7 +38,6 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'streamerorb',
 ]
 
 MIDDLEWARE = [
