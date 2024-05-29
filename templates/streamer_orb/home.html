@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Streamer Orb Generator{% endblock %}
+{% comment %} THIS CODE HAS THE FOLLOWING ADDITIONAL STUFF AVAILABLE: JQUERY, TAILWIND {% endcomment %}
+{% block content %}
+<div class="flex justify-center items-center h-screen">
+    <div class="bg-purple-900 opacity-75 fixed inset-0"></div>
+    <div class="max-w-md w-full bg-white shadow-md rounded-lg p-6 relative">
+        <h2 class="text-xl font-bold mb-4 text-center text-gray-900">Twitch Streamer Orb Generator</h2>
+        <div class="flex flex-row mb-4">
+            <div class="w-3/4 mr-2">
+                <input id="username-input" type="text" class="border border-purple-500 rounded-md w-full py-2 px-3 text-gray-900" placeholder="Enter your text">
+            </div>
+            <div class="w-1/4">
+                <button onclick="Generate()" class="bg-purple-900 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded w-full">
+                    ORB
+                </button>
+            </div>
+        </div>
+        <div id="image-container" class="mt-4 flex justify-center items-center">
+            <!-- The generated image will be displayed here -->
+        </div>
+    </div>
+</div>
+<script>
+    function Generate() {
+        var username = $("#username-input").val();
+        if (username) {
+            GetImage(username);
+        } else {
+            $("#username-input").addClass("border-red-500"); // Add a red border
+            $("#username-input").after('<p class="text-red-500 text-sm mt-1">Please enter a username.</p>');
+        }
+    }
+
+    // Call Generate function when Enter key is pressed
+    $("#username-input").on("keydown", function(event) {
+        if (event.keyCode === 13) {
+            event.preventDefault();
+            Generate();
+        }
+    });
+
+    // Remove the red border and error message when the user starts typing
+    $("#username-input").on("input", function() {
+        $(this).removeClass("border-red-500"); // Remove the red border
+        $("#username-input").next().remove(); // Remove any existing error message
+    });
+
+    function GetImage(username) {
+        $.ajax({
+            url: '/streamerorb/get_image/',
+            method: 'POST',
+            data: { 
+                username: username, 
+                csrfmiddlewaretoken: '{{ csrf_token }}'
+            },
+            success: function(response) {
+                // Handle the response
+                if (response.error) {
+                    alert(response.error);
+                } else {
+                    console.log(response);
+                    $("#image-container").html('<img src="' + response.profile_image_url + '" alt="Streamer Orb Image">');
+                }
+            },
+            error: function(xhr, status, error) {
+                console.log(xhr.responseText, status, error);
+            }
+        });
+    }
+</script>
+{% endblock %}
