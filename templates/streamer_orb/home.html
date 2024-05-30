@@ -111,7 +111,7 @@
                 if (response.error) {
                     alert(response.error);
                 } else {
-                    $("#image-container").html('<img src="' + response.url + '" alt="'+username+' Orb Image">');
+                    $("#image-container").html('<img src="' + response.url + '?timestamp=' + new Date().getTime() + '" alt="'+username+' Orb Image">');
                     $("#download-button").attr("href", response.url);
                     $("#download-button").removeClass("hidden");
                 }
