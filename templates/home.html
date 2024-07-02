@@ -6,39 +6,21 @@
 <div class="overlay flex justify-center items-center h-screen cursor-pointer fixed top-0 left-0 w-full bg-black z-20" id="overlay">
     <h6 class="crt overlay-text font-mono text-white text-center" id="overlay-text"></h6>
 </div>
-<div class="bg-neutral-900 sm:mx-auto sm:max-w-lg fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 rounded z-10">
-    <div class="flex flex-col mx-auto max-w-md">
-        <div class="flex flex-row">
-            <div class="w-32">
-                <img src="{% static 'img/profile/wolf.png' %}" alt="Profile Picture" class="pfp-circle">
-            </div>
-            <div class="flex flex-col">
-                <div class="ml-3">
-                    <p class="card-header-title text-center">Wolfy.exe_</p>
-                    <p class="card-header-title text-center">Software Developer</p>
-                </div>
+<div class="flex justify-center items-center h-screen">
+    <div class="card mt-8 bg-white">
+        <div class="card-content">
+            <div class="content">
+                <h3 class="text-2xl font-bold text-white">Basic Info</h3>
+                <ul class="list-disc ml-6 mt-4">
+                    <li><span class="font-bold text-white">Name:</span> Wolfy.exe_</li>
+                    <li><span class="font-bold text-white">Occupation:</span> Software Developer</li>
+                    <li><span class="font-bold text-white">Education:</span> Information Systems</li>
+                    <li><span class="font-bold text-white">Interests:</span> Cybersecurity, Learning new technologies</li>
+                </ul>
             </div>
         </div>
     </div>
 </div>
-{% comment %} <div class="bg-gray-900 fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 rounded z-10">
-    <div class="flex flex-col">
-        <div class="w-32 bg-gray-900">
-            <img src="{% static 'img/profile/wolf.png' %}" alt="Profile Picture" class="pfp-circle">
-        </div>
-        <div class="flex flex-col">
-            <div class="ml-3">
-                <p class="card-header-title text-center">Wolfy.exe_</p>
-                <p class="card-header-title text-center">Software Developer</p>
-            </div>
-        </div>
-    </div>
-    <div class="card-content pt-0">
-        <div class="content">
-            <p class="text-white text-center">I'm a software developer and a cybersecurity enthusiast. I'm currently finishing my studies in Information Systems. I love learning new technologies and helping out others.</p>
-        </div>
-    </div>
-</div> {% endcomment %}
 <div class="video-container crt fixed top-0 left-0 w-screen h-screen z-[-1] brightness-50 blur-2">
     <video id="background-video" loop muted class="w-screen h-screen object-cover">
         <source src="{% static 'video/background.mp4' %}" type="video/mp4">

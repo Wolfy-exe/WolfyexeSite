@@ -1,12 +1,24 @@
 from django.http import JsonResponse
 from django.shortcuts import render
-from .tokenhandler import get_valid_token
+from .twitchAPI import get_valid_token, search_user
 from .orbfy import orbfy
 from dotenv import load_dotenv
 import requests,os
 
 def home(request):
     return render(request=request, template_name='streamer_orb/home.html', context={'test':"Home Page"})
+
+def search_streamer(request):
+    username = request.POST.get('username')
+    errors = []
+    # Validate the input
+    if not username and len(username) < 26:
+        return JsonResponse({'error': 'Valid username is required'})
+    channels = search_user(username)
+    if channels == None:
+        return JsonResponse({'error': 'Error: Could not find channels with that username'})
+    # If there are errors, return them
+    return JsonResponse({'success': 'Search query successful', 'channels': channels, 'count': len(channels)})
 
 def get_image(request):
     username = request.POST.get('username')

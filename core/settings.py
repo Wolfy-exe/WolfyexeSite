@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-(tcq7+i30x(#2hxubw8fs$o4wi_a@!42987___ffm+_b8h%t$b
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["localhost","127.0.0.1","wolfyexe.pythonanywhere.com"]
+ALLOWED_HOSTS = ["localhost","127.0.0.1","wolfyexe.pythonanywhere.com","wolfyexe.com","www.wolfyexe.com"]
 
 
 # Application definition
@@ -128,3 +128,5 @@ STATICFILES_DIRS = [
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+APPEND_SLASH = True

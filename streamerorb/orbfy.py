@@ -17,11 +17,9 @@ def orbfy(image_path, output_dir, streamer, frame_count=20, img_size=300):
     img = img.resize((img_size, img_size))
     img_np = np.array(img)
     animation = APNG()
-    
-    for frame in range(frame_count):
-        theta_offset = 2 * np.pi * frame / frame_count
+    for frameIndex in range(frame_count):
+        theta_offset = 2 * np.pi * frameIndex / frame_count
         new_frame_np = np.zeros((img_size, img_size, 4), dtype=np.uint8)
-        
         for y_2d in range(img_size):
             for x_2d in range(img_size):
                 xs = (x_2d - img_size // 2) / (img_size // 2)
@@ -38,12 +36,12 @@ def orbfy(image_path, output_dir, streamer, frame_count=20, img_size=300):
                     new_frame_np[y_2d, x_2d] = img_np[yi, xi]
         # save current frame to png file
         frame = Image.fromarray(new_frame_np)
-        frame.save(os.path.join(output_dir, f"frame_{frame}.png"))
+        frame.save(os.path.join(output_dir, f"frame_{frameIndex}.png"))
         # append frame to the animation
-        framepng = PNG.open(os.path.join(output_dir, f"frame_{frame}.png"))
+        framepng = PNG.open(os.path.join(output_dir, f"frame_{frameIndex}.png"))
         animation.append(framepng, delay=100)
         # delete the frame file
-        os.remove(os.path.join(output_dir, f"frame_{frame}.png"))
+        os.remove(os.path.join(output_dir, f"frame_{frameIndex}.png"))
     # Save the animation to a file
     animation.save(os.path.join(output_dir, "animation.apng"))
     # Convert the APNG to a GIF

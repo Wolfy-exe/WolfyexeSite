@@ -46,10 +46,33 @@ def get_valid_token():
         ACCESS_TOKEN = get_new_token(CLIENT_ID, CLIENT_SECRET)
         update_env_file(ACCESS_TOKEN)
         print("New token obtained and stored.")
-    else:
-        print("Current token is still valid.")
+    #else:
+        #print("Current token is still valid.")
     
     return ACCESS_TOKEN
 
+def search_user(username):
+    token = get_valid_token()
+    search_url = 'https://api.twitch.tv/helix/search/channels'
+    headers = {
+        'Client-ID': CLIENT_ID,
+        'Authorization': f'Bearer {token}'
+    }
+    params = {
+        'query': username,
+        'first': 5,
+        'live_only': 'false'
+    }
+    
+    response = requests.get(search_url, headers=headers, params=params)
+    response.raise_for_status()
+    user_data = response.json()
+    
+    if user_data['data']:
+        return user_data['data']
+    else:
+        return None
+
 if __name__ == '__main__':
-    get_valid_token()
+    users = search_user('arbavaçqhqwasvlrmaroib3214')
+    print(users)

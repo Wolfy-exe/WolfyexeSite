@@ -11,11 +11,21 @@
         </div>
         <h2 class="text-xl font-bold mb-4 text-center text-gray-900">Twitch Streamer Orb Generator</h2>
         <div class="flex flex-col mb-4">
-            <div class="w-full mb-2">
-                <label for="username-input" class="text-gray-900">Streamer Username:</label>
-                <input id="username-input" type="text" class="border border-purple-500 rounded-md w-full py-2 px-3 text-gray-900" placeholder="Enter the streamer username" value="kappa">
-            </div>
+            <label for="username-input" class="text-gray-900">Streamer Username:</label>
             <div class="flex flex-row">
+                <div class="w-4/5 mr-2">
+                    <input id="username-input" type="text" class="border border-purple-500 rounded-md w-full py-2 px-3 text-gray-900" placeholder="Enter the streamer username" value="kappa">
+                </div>
+                <div class="w-1/5">
+                    <button id="search-button" onclick="Search()" class="disabled:opacity-75 bg-purple-900 hover:bg-purple-700 text-white font-bold px-4 rounded w-full h-full">
+                        <div class="flex justify-center items-center h-full">
+                            <img src="{% static 'img/icons/search.svg' %}" alt="Search Icon" class="h-full py-1">
+                        </div>
+                    </button>
+                </div>
+            </div>
+            <div id="search-results" class="hidden"></div>
+            <div class="flex flex-row mt-2">
                 <div class="w-1/2 mr-2">
                     <label for="speed-input" class="text-gray-900">Speed (5-60):</label>
                     <input id="speed-input" type="number" class="border border-purple-500 rounded-md w-full py-2 px-3 text-gray-900" placeholder="Speed (5-60)" min="5" max="60" value="20">
@@ -27,32 +37,67 @@
             </div>
         </div>
         <div class="w-full">
-            <button onclick="Generate()" class="bg-purple-900 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded w-full">
+            <button id="orb-button" onclick="ValidateAll()" class="disabled:opacity-75 bg-purple-900 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded w-full">
                 ORB
             </button>
         </div>
-        <div id="image-container" class="mt-4 flex justify-center items-center">
-            <!-- The generated image will be displayed here -->
+        <div id="loading-container" class="flex justify-center items-center mt-2 hidden">
+            <div class="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-e-transparent align-[-0.125em] text-surface motion-reduce:animate-[spin_1.5s_linear_infinite] text-purple-900" role="status">
+                <span class="!absolute !-m-px !h-px !w-px !overflow-hidden !whitespace-nowrap !border-0 !p-0 ![clip:rect(0,0,0,0)]">Loading...</span>
+            </div>
         </div>
-        <div class="w-full mt-4 justify-center items-center">
-            <a id="download-button" href="#" download="file.gif" class="hidden">
+        <div id="image-container" class="flex justify-center items-center mt-4 hidden"></div>
+        <div class="w-full mt-4 justify-center items-center hidden">
+            <a id="download-button" href="#" download="file.gif">
                 <button class="bg-purple-900 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded w-full">
                     Download
                 </button>
             </a>
         </div>
     </div>
-    </div>  
+    </div>
 </div>
 <script>
-    function Generate() {
+    function Reset() {
+        $("#image-container").html("");
+        $("#download-button").parent().addClass("hidden");
+        $("#loading-container").hide();
+        $("#username-input").removeClass("border-red-500");
+        $("#size-input").removeClass("border-red-500");
+        $("#speed-input").removeClass("border-red-500");
+        EnableInput();
+    }
+    function DisableInput() {
+        $("#username-input").prop("disabled", true);
+        $("#speed-input").prop("disabled", true);
+        $("#size-input").prop("disabled", true);
+        $("#search-button").prop("disabled", true);
+        $("#orb-button").prop("disabled", true);
+
+    }
+    function EnableInput() {
+        $("#username-input").prop("disabled", false);
+        $("#speed-input").prop("disabled", false);
+        $("#size-input").prop("disabled", false);
+        $("#search-button").prop("disabled", false);
+        $("#orb-button").prop("disabled", false);
+    }
+    function ValidUsername() {
         var username = $("#username-input").val();
-        var speed = $("#speed-input").val();
-        var size = $("#size-input").val();
-        var error = false;
         if (!username) {
             $("#username-input").addClass("border-red-500"); // Add a red border
             $("#username-input").after('<p class="text-red-500 text-sm mt-1">Please enter a username.</p>');
+            return false;
+        }
+        return true;
+    }
+    function ValidateAll() {
+        var username = $("#username-input").val();
+        var speed = $("#speed-input").val();
+        var size = $("#size-input").val();
+
+        var error = false;
+        if (!ValidUsername()) {
             error = true;
         }
         if (speed < 5 || speed > 60) {
@@ -69,17 +114,65 @@
             GetImage(username, speed, size);
         }
     }
+    function Select(username) {
+        $("#username-input").val(username);
+        $("#search-results").hide();
+    }
 
+    // Search for username-input using a GET request and add up to 5 search results
+    function Search() {
+        var username = $("#username-input").val();
+        if (ValidUsername) {
+            $.ajax({
+                url: '/streamerorb/search_streamer/',
+                method: 'POST',
+                data: { 
+                    csrfmiddlewaretoken: '{{ csrf_token }}',
+                    username: username
+                },
+                success: function(response) {
+                    var searchResults = response.channels;
+                    var html = '<div class="flex flex-col border-solid m-1">';
+                    for (var i = 0; i < response.count; i++) {
+                        html += '<div class="flex flex-row p-1" onclick="Select(\'' + searchResults[i].broadcaster_login + '\')" onmouseover="this.style.cursor=\'pointer\'">';
+                        html += '<div class="flex w-1/6 justify-center align-middle">';
+                        html += '<div class="flex h-12 w-12">';
+                        html += '<img src="' + searchResults[i].thumbnail_url + '" alt="User Avatar" class="w-12 h-12 rounded-full">';
+                        html += '</div>';
+                        html += '</div>';
+                        html += '<div class="flex flex-col w-4/6">';
+                        html += '<p class="text-gray-900 text-sm mt-1">' + searchResults[i].display_name + '</p>';
+                        html += '<p class="text-gray-900 text-sm mt-1">(' + searchResults[i].broadcaster_login + ')</p>';
+                        html += '</div>';
+                        html += '<div class="flex w-1/6 h-18">';
+                        html += '<button class="bg-purple-900 hover:bg-purple-700 text-white font-bold py-1 rounded w-full">Select</button>';
+                        html += '</div>';
+                        html += '</div>';
+                    }
+                    html += '</div>';
+                    $("#search-results").html(html);
+                    $("#search-results").show();
+                },
+                error: function(xhr, status, error) {
+                    Reset();
+                    alert("Error: " + xhr.responseText);
+                    $("#search-results").hide();
+                }
+            });
+        }
+    }
+    
     // Call Generate function when Enter key is pressed
     $("#username-input").on("keydown", function(event) {
         if (event.keyCode === 13) {
             event.preventDefault();
-            Generate();
+            ValidateAll();
         }
     });
 
     // Remove the red border and error message when the user starts typing
     $("#username-input").on("input", function() {
+        $("#search-results").hide();
         $(this).removeClass("border-red-500"); // Remove the red border
         $("#username-input").next().remove(); // Remove any existing error message
     });
@@ -94,8 +187,11 @@
 
     function GetImage(username, speed, size) {
         // Show loading spinner
-        $("#image-container").html('<div class="loader"></div>');
-        $("#download-button").addClass("hidden");
+        $("#loading-container").removeClass("hidden");
+        $("#image-container").addClass("hidden");
+        // Hide the download button
+        $("#download-button").parent().addClass("hidden");
+        DisableInput();
         // Make an AJAX request to the server
         $.ajax({
             url: '/streamerorb/get_image/',
@@ -112,14 +208,21 @@
                     alert(response.error);
                 } else {
                     $("#image-container").html('<img src="' + response.url + '?timestamp=' + new Date().getTime() + '" alt="'+username+' Orb Image">');
+                    $("#image-container").removeClass("hidden");
                     $("#download-button").attr("href", response.url);
-                    $("#download-button").removeClass("hidden");
+                    $("#download-button").parent().removeClass("hidden");
+                    // Hide the loading spinner
+                    $("#loading-container").addClass("hidden");
+                    // Enable all input fields
+                    EnableInput();
                 }
             },
             error: function(xhr, status, error) {
+                Reset();
                 console.log(xhr.responseText, status, error);
             }
         });
     }
+
 </script>
 {% endblock %}
