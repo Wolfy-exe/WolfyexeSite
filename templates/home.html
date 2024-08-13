@@ -3,61 +3,38 @@
 
 {% comment %} THIS CODE HAS THE FOLLOWING ADDITIONAL STUFF AVAILABLE: JQUERY, TAILWIND {% endcomment %}
 {% block content %}
-<div class="overlay flex justify-center items-center h-screen cursor-pointer fixed top-0 left-0 w-full bg-black z-20" id="overlay">
+<div class="overlay flex justify-center items-center h-screen cursor-pointer fixed top-0 left-0 w-full bg-black z-20{% if debug %} hidden{% endif %}" id="overlay">
     <h6 class="crt overlay-text font-mono text-white text-center" id="overlay-text"></h6>
 </div>
 <div class="flex justify-center items-center h-screen">
-    <div class="max-w-md w-full bg-neutral-100 shadow-md rounded-lg p-6 relative flex flex-col">
-        <div class="flex flex-row">
-            <div class="flex flex-col justify-around w-5/6">
-                <div class="flex flex-row">
-                    <h6 class="text-2md font-bold">Nickname:</h6>
-                    <p class="ml-2 self-center">Wolfy.exe_</p>
-                </div>
-                <div class="flex flex-row">
-                    <h6 class="text-2md font-bold">Pronouns:</h6>
-                    <p class="ml-2 self-center">She/Her</p>
-                </div>
-                <div class="flex flex-row">
-                    <h6 class="text-2md font-bold">Education:</h6>
-                    <p class="ml-2 self-center">Bachelor of Information Systems</p>
-                </div>
-                <div class="flex flex-row">
-                    <h6 class="text-2md font-bold">Occupation:</h6>
-                    <p class="ml-2 self-center">Software Developer</p>
-                </div>
-                <div class="flex flex-row">
-                    <h6 class="text-2md font-bold">Skills:</h6>
-                    <p class="ml-2 self-center">Python, Java, C++, PHP</p>
-                </div>
-                <div class="flex flex-row">
-                    <h6 class="text-2md font-bold">Languages:</h6>
-                    <p class="ml-2 self-center">English, Portuguese, Swiss German, French</p>
-                </div>
-                <div class="flex flex-row">
-                    <h6 class="text-2md font-bold">Projects:</h6>
-                    <p class="ml-2 self-center">Personal Website, Random ideas, Final paper</p>
-                </div>
-                <div class="flex flex-row">
-                    <h6 class="text-2md font-bold">Hobbies:</h6>
-                    <p class="ml-2 self-center">Gaming, Coding, Crocheting</p>
-                </div>
-                <div class="flex flex-row">
-                    <h6 class="text-2md font-bold">Interests:</h6>
-                    <p class="ml-2 self-center">Cybersecurity, Learning new technologies</p>
-                </div>
-                <div class="flex flex-row">
-                    <h6 class="text-2md font-bold">About Me:</h6>
-                    <p class="ml-2 self-center">I am a passionate and dedicated software developer with a strong foundation in programming languages. I have a keen eye for detail and a natural talent for problem-solving.</p>
-                </div>
-                <div class="flex flex-row">
-                    <h6 class="text-2md font-bold">Location:</h6>
-                    <p class="ml-2 self-center">Brazil</p>
-                </div>
-            </div>
-            <div class="mt-2 flex w-1/6">
-                <img src="{% static "img/profile/wolf.png" %}" alt="Profile Image" class="mx-auto h-20 w-20 -translate-y-10 rounded-full">
-            </div>
+    <div class="max-w-2xl w-full bg-zinc-900 shadow-md rounded-lg p-6 relative flex flex-col">
+        <div>
+            <label for="nickname" class="text-2md font-bold text-sm text-gray-50">Nickname:</label>
+            <input type="text" id="nickname" class="ml-2 self-center text-sm text-gray-50" value="Wolfy.exe_" disabled>
+        </div>
+        <div>
+            <label for="pronouns" class="text-2md font-bold text-sm text-gray-50">Pronouns:</label>
+            <input type="text" id="pronouns" class="ml-2 self-center text-sm text-gray-50" value="She/Her" disabled>
+        </div>
+        <div>
+            <label for="about-me" class="text-2md font-bold text-sm text-gray-50">About Me:</label>
+            <input type="text" id="about-me" class="ml-2 self-center text-sm text-gray-50" value="I am a passionate and dedicated software developer with a strong foundation in programming languages. I have a keen eye for detail and a natural talent for problem-solving." disabled>
+        </div>
+        <div>
+            <label for="occupation" class="text-2md font-bold text-sm text-gray-50">Occupation:</label>
+            <input type="text" id="occupation" class="ml-2 self-center text-sm text-gray-50" value="Software Developer" disabled>
+        </div>
+        <div>
+            <label for="languages" class="text-2md font-bold text-sm text-gray-50">Languages:</label>
+            <input type="text" id="languages" class="ml-2 self-center text-sm text-gray-50" value="English, Portuguese, Swiss German, French" disabled>
+        </div>
+        <div>
+            <label for="hobbies" class="text-2md font-bold text-sm text-gray-50">Hobbies:</label>
+            <input type="text" id="hobbies" class="ml-2 self-center text-sm text-gray-50" value="Gaming, Coding, Crocheting" disabled>
+        </div>
+        <div>
+            <label for="location" class="text-2md font-bold text-sm text-gray-50">Location:</label>
+            <input type="text" id="location" class="ml-2 self-center text-sm text-gray-50" value="Brazil" disabled>
         </div>
     </div>
 </div>
